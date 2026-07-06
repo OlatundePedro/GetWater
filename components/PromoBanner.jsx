@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: "600",
     color: "#000000",
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: "GoogleSansFlex-Regular",
   },
 });

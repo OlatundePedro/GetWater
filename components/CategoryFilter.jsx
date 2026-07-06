@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     paddingVertical: 10,
-    paddingHorizontal: 31,
+    paddingHorizontal: 28,
     borderRadius: 6,
     marginRight: 0,
   },
