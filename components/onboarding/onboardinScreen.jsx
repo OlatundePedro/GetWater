@@ -26,7 +26,7 @@ export default function OnboardingScreen({
 
       {onBack && (
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Ionicons name="arrow-back" size={32} color="#5DCCFC" />
+          <Ionicons name="arrow-back" size={32} color="#12a5e4" />
         </TouchableOpacity>
       )}
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   button: {
-    backgroundColor: "#5DCCFC",
+    backgroundColor: "#12a5e4",
     paddingVertical: 18,
     marginHorizontal: 20,
     marginBottom: 55,

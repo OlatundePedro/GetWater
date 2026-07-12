@@ -5,6 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import SplashScreenView from "../components/SplashScreen";
 import { AuthProvider } from "../context/AuthContext";
+import { CartProvider } from "../context/CartContext";
+import { FavouritesProvider } from "../context/FavouritesContext";
+import { ProductsProvider } from "../context/ProductContext";
+import { ProfileProvider } from "../context/ProfileContext";
+import { ThemeProvider } from "../context/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,6 +32,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
+        // real startup work goes here
       } catch (e) {
         console.warn(e);
       } finally {
@@ -43,9 +49,8 @@ export default function RootLayout() {
     }
   }, [appIsReady]);
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !appIsReady) {
     return null;
-    if (!appIsReady) return null;
   }
 
   if (showCustomSplash) {
@@ -57,13 +62,18 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="step-2" />
-        <Stack.Screen name="step-3" />
-        <Stack.Screen name="welcome" />
-      </Stack>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ProductsProvider>
+          <ProfileProvider>
+            <CartProvider>
+              <FavouritesProvider>
+                <Stack screenOptions={{ headerShown: false }} />
+              </FavouritesProvider>
+            </CartProvider>
+          </ProfileProvider>
+        </ProductsProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

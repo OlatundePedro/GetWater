@@ -4,7 +4,7 @@ import Svg, { Path } from "react-native-svg";
 export default function SplashScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#5DCCFC" />
+      <StatusBar barStyle="light-content" backgroundColor="#12a5e4" />
 
       <View style={styles.content}>
         <View style={styles.dropWrapper}>
@@ -42,7 +42,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#5DCCFC",
+    backgroundColor: "#12a5e4",
     alignItems: "center",
     justifyContent: "center",
   },

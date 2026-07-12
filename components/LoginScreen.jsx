@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LoginScreen({
   onBack,
@@ -21,6 +22,7 @@ export default function LoginScreen({
   onSignUp,
   loading,
 }) {
+  const { colors } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +36,9 @@ export default function LoginScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -44,31 +48,40 @@ export default function LoginScreen({
           keyboardShouldPersistTaps="handled"
         >
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
-            <Ionicons name="arrow-back" size={26} color="#5AC8F2" />
+            <Ionicons name="arrow-back" size={26} color={colors.primary} />
           </TouchableOpacity>
 
-          <Text style={styles.title}>Welcome Back!</Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.title, { color: colors.primary }]}>
+            Welcome Back!
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textMuted }]}>
             Please fill in your email password to login to {"\n"}your account.
           </Text>
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={[styles.label, { color: colors.textMuted }]}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { borderColor: colors.border, color: colors.text },
+            ]}
             placeholder="example@gmail.com"
-            placeholderTextColor="#625D5D"
+            placeholderTextColor={colors.textFaint}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
             keyboardType="email-address"
           />
 
-          <Text style={styles.label}>Password</Text>
-          <View style={styles.passwordWrapper}>
+          <Text style={[styles.label, { color: colors.textMuted }]}>
+            Password
+          </Text>
+          <View
+            style={[styles.passwordWrapper, { borderColor: colors.border }]}
+          >
             <TextInput
-              style={styles.passwordInput}
+              style={[styles.passwordInput, { color: colors.text }]}
               placeholder="******************"
-              placeholderTextColor="#625D5D"
+              placeholderTextColor={colors.textFaint}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -81,7 +94,7 @@ export default function LoginScreen({
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
                 size={20}
-                color="#625D5D"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
@@ -90,13 +103,15 @@ export default function LoginScreen({
             onPress={onForgotPassword}
             style={styles.forgotWrapper}
           >
-            <Text style={styles.forgotText}>Forgot Password?</Text>
+            <Text style={[styles.forgotText, { color: colors.text }]}>
+              Forgot Password?
+            </Text>
           </TouchableOpacity>
 
           <View style={{ flex: 1 }} />
 
           <TouchableOpacity
-            style={styles.loginButton}
+            style={[styles.loginButton, { backgroundColor: colors.primary }]}
             onPress={handleSubmit}
             disabled={loading}
           >
@@ -108,9 +123,11 @@ export default function LoginScreen({
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onSignUp} style={styles.signupWrapper}>
-            <Text style={styles.signupText}>
+            <Text style={[styles.signupText, { color: colors.textMuted }]}>
               Don't have an account?{" "}
-              <Text style={styles.signupLink}>Sign up</Text>
+              <Text style={[styles.signupLink, { color: colors.primary }]}>
+                Sign up
+              </Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -120,7 +137,7 @@ export default function LoginScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   scroll: {
     flexGrow: 1,
     paddingHorizontal: 24,
@@ -131,37 +148,31 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontFamily: "GoogleSansFlex-Bold",
-    color: "#5DCCFC",
     marginBottom: 15,
   },
   subtitle: {
     fontSize: 14,
     fontFamily: "GoogleSansFlex-Regular",
-    color: "#625D5D",
     lineHeight: 22,
     marginBottom: 28,
   },
   label: {
     fontSize: 14,
     fontFamily: "GoogleSansFlex-Bold",
-    color: "#625D5D",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#625D5D",
     paddingHorizontal: 16,
     paddingVertical: 17,
     fontSize: 12,
     fontFamily: "GoogleSansFlex-Regular",
-    color: "#1F2937",
     marginBottom: 24,
   },
   passwordWrapper: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#625D5D",
     paddingHorizontal: 16,
     marginBottom: 24,
   },
@@ -169,7 +180,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 17,
     fontSize: 12,
-    color: "#1F2937",
     fontFamily: "GoogleSansFlex-Regular",
   },
   eyeButton: {
@@ -177,12 +187,10 @@ const styles = StyleSheet.create({
   },
   forgotWrapper: { alignItems: "flex-end", marginBottom: 40 },
   forgotText: {
-    color: "#374151",
     fontFamily: "GoogleSansFlex-SemiBold",
     fontSize: 12,
   },
   loginButton: {
-    backgroundColor: "#5DCCFC",
     paddingVertical: 18,
     alignItems: "center",
     marginBottom: 20,
@@ -195,14 +203,12 @@ const styles = StyleSheet.create({
   },
   signupWrapper: { alignItems: "center" },
   signupText: {
-    color: "#625D5D",
     fontSize: 13,
     textDecorationLine: "underline",
     marginBottom: 160,
     fontFamily: "GoogleSansFlex-Regular",
   },
   signupLink: {
-    color: "#5DCCFC",
     fontFamily: "GoogleSansFlex-Bold",
     textDecorationLine: "underline",
   },

@@ -9,7 +9,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { products, waterTypes } from "../data/products";
+import { useProducts } from "../context/ProductContext";
+import { useTheme } from "../context/ThemeContext";
 import CategoryFilter from "./CategoryFilter";
 import ProductCard from "./ProductCard";
 import PromoBanner from "./PromoBanner";
@@ -20,19 +21,25 @@ export default function HomeScreen({
   onQuickShop,
   onProductPress,
 }) {
+  const { colors } = useTheme();
+  const { products, waterTypes, loading, refreshProducts } = useProducts();
   const [selectedType, setSelectedType] = useState("All");
   const [search, setSearch] = useState("");
-
-  const filteredProducts = products.filter(
-    (p) => selectedType === "All" || p.type === selectedType,
-  );
 
   const displayName =
     user?.user_metadata?.full_name || user?.email?.split("@")[0];
 
+  const filteredProducts = products.filter(
+    (p) =>
+      (selectedType === "All" || p.type === selectedType) &&
+      p.name.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <SafeAreaView
+        style={[styles.header, { backgroundColor: colors.primary }]}
+      >
         <View style={styles.headerTop}>
           {user ? (
             <View>
@@ -67,7 +74,9 @@ export default function HomeScreen({
       >
         <PromoBanner onPress={onQuickShop} />
 
-        <Text style={styles.sectionLabel}>Water type</Text>
+        <Text style={[styles.sectionLabel, { color: colors.text }]}>
+          Water type
+        </Text>
         <CategoryFilter
           types={waterTypes}
           selected={selectedType}
@@ -89,29 +98,29 @@ export default function HomeScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
-    backgroundColor: "#5DCCFC",
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    height: 210,
+    paddingBottom: 40,
+    height: 215,
   },
   headerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 20,
+    marginBottom: 25,
   },
   welcomeTitle: {
     fontSize: 22,
     color: "#FFFFFF",
-    marginTop: 55,
+    marginTop: 75,
     fontFamily: "GoogleSansFlex-Bold",
+    marginBottom: 10,
   },
   welcomeBackLabel: {
     fontSize: 12,
     color: "#FFFFFF",
-    marginTop: 40,
+    marginTop: 60,
     fontFamily: "GoogleSansFlex-Medium",
   },
   welcomeBackName: {
@@ -128,8 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   searchBar: {
-    backgroundColor:
-      "linear-gradient(90deg, rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.2))",
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: 6,
     flexDirection: "row",
     alignItems: "center",
@@ -150,7 +158,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 11,
     fontFamily: "GoogleSansFlex-Medium",
-    color: "#1F2937",
     marginTop: 15,
     marginBottom: 12,
   },

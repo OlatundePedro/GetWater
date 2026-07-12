@@ -1,6 +1,9 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useTheme } from "../context/ThemeContext";
 
 export default function CategoryFilter({ types, selected, onSelect }) {
+  const { colors } = useTheme();
+
   return (
     <ScrollView
       horizontal
@@ -14,14 +17,16 @@ export default function CategoryFilter({ types, selected, onSelect }) {
             key={type}
             style={[
               styles.chip,
-              isActive ? styles.activeChip : styles.inactiveChip,
+              {
+                backgroundColor: isActive ? colors.primary : colors.card,
+              },
             ]}
             onPress={() => onSelect(type)}
           >
             <Text
               style={[
                 styles.chipText,
-                isActive ? styles.activeText : styles.inactiveText,
+                { color: isActive ? "#FFFFFF" : colors.textMuted },
               ]}
             >
               {type}
@@ -44,20 +49,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginRight: 0,
   },
-  activeChip: {
-    backgroundColor: "#1F2937",
-  },
-  inactiveChip: {
-    backgroundColor: "#9CA3AF",
-  },
   chipText: {
     fontFamily: "GoogleSansFlex-Regular",
-    fontSize: 9,
-  },
-  activeText: {
-    color: "#FFFFFF",
-  },
-  inactiveText: {
-    color: "#FFFFFF",
+    fontSize: 11,
   },
 });

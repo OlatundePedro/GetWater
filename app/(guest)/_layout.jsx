@@ -1,14 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Tabs, usePathname, useRouter } from "expo-router";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function GuestTabsLayout() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { colors } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#5DCCFC",
-        tabBarInactiveTintColor: "#625D5D",
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textFaint,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          height: 85,
+          paddingBottom: 15,
+          paddingTop: 15,
+          backgroundColor: colors.background,
+          borderTopColor: colors.border,
+        },
       }}
     >
       <Tabs.Screen
@@ -22,9 +34,19 @@ export default function GuestTabsLayout() {
       <Tabs.Screen
         name="shop"
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bag-outline" color={color} size={30} />
+          tabBarIcon: ({ size }) => (
+            <Ionicons
+              name="bag-outline"
+              color={pathname === "/cart" ? colors.primary : colors.textFaint}
+              size={30}
+            />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push("/cart");
+          },
         }}
       />
       <Tabs.Screen
@@ -43,6 +65,10 @@ export default function GuestTabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="cart" options={{ href: null }} />
+      <Tabs.Screen name="product/[id]" options={{ href: null }} />
+      <Tabs.Screen name="order-success" options={{ href: null }} />
+      <Tabs.Screen name="checkout" options={{ href: null }} />
     </Tabs>
   );
 }

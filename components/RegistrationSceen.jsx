@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../context/ThemeContext";
 
 export default function RegistrationScreen({
   onBack,
@@ -21,6 +22,7 @@ export default function RegistrationScreen({
   onSignIn,
   loading,
 }) {
+  const { colors } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +55,9 @@ export default function RegistrationScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -63,40 +67,52 @@ export default function RegistrationScreen({
           keyboardShouldPersistTaps="handled"
         >
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
-            <Ionicons name="arrow-back" size={26} color="#5AC8F2" />
+            <Ionicons name="arrow-back" size={26} color={colors.primary} />
           </TouchableOpacity>
 
-          <Text style={styles.title}>Create your Account</Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.title, { color: colors.primary }]}>
+            Create your Account
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textMuted }]}>
             Please fill in your details to create your {"\n"}account
           </Text>
 
-          <Text style={styles.label}>Name</Text>
+          <Text style={[styles.label, { color: colors.textMuted }]}>Name</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { borderColor: colors.border, color: colors.text },
+            ]}
             placeholder="John Doe"
-            placeholderTextColor="#625D5D"
+            placeholderTextColor={colors.textFaint}
             value={name}
             onChangeText={setName}
           />
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={[styles.label, { color: colors.textMuted }]}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { borderColor: colors.border, color: colors.text },
+            ]}
             placeholder="example@gmail.com"
-            placeholderTextColor="#625D5D"
+            placeholderTextColor={colors.textFaint}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
             keyboardType="email-address"
           />
 
-          <Text style={styles.label}>Password</Text>
-          <View style={styles.passwordWrapper}>
+          <Text style={[styles.label, { color: colors.textMuted }]}>
+            Password
+          </Text>
+          <View
+            style={[styles.passwordWrapper, { borderColor: colors.border }]}
+          >
             <TextInput
-              style={styles.passwordInput}
+              style={[styles.passwordInput, { color: colors.text }]}
               placeholder="******************"
-              placeholderTextColor="#625D5D"
+              placeholderTextColor={colors.textFaint}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -109,17 +125,21 @@ export default function RegistrationScreen({
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
                 size={20}
-                color="#625D5D"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.label}>Confirm Password</Text>
-          <View style={styles.passwordWrapper}>
+          <Text style={[styles.label, { color: colors.textMuted }]}>
+            Confirm Password
+          </Text>
+          <View
+            style={[styles.passwordWrapper, { borderColor: colors.border }]}
+          >
             <TextInput
-              style={styles.passwordInput}
+              style={[styles.passwordInput, { color: colors.text }]}
               placeholder="******************"
-              placeholderTextColor="#625D5D"
+              placeholderTextColor={colors.textFaint}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
@@ -132,27 +152,27 @@ export default function RegistrationScreen({
               <Ionicons
                 name={showConfirmPassword ? "eye" : "eye-off"}
                 size={20}
-                color="#625D5D"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.privacy}>
             <Checkbox
-              color={isChecked ? "#5DCCFC" : "#625D5D"}
+              color={isChecked ? colors.primary : colors.textFaint}
               style={styles.checkbox}
               value={isChecked}
               onValueChange={() => setChecked((prev) => !prev)}
             />
-            <Text style={styles.policyText}>
+            <Text style={[styles.policyText, { color: colors.textMuted }]}>
               By signing up, you agree to the{" "}
-              <Text style={{ color: "#5DCCFC" }}>
+              <Text style={{ color: colors.primary }}>
                 Terms of {"\n"}services and Privacy Policy
               </Text>
             </Text>
           </View>
 
           <TouchableOpacity
-            style={styles.registerButton}
+            style={[styles.registerButton, { backgroundColor: colors.primary }]}
             onPress={handleSubmit}
             disabled={loading}
           >
@@ -164,9 +184,11 @@ export default function RegistrationScreen({
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onSignIn} style={styles.signinWrapper}>
-            <Text style={styles.signinText}>
+            <Text style={[styles.signinText, { color: colors.textMuted }]}>
               Already have an account?{" "}
-              <Text style={styles.signinLink}>Sign in</Text>
+              <Text style={[styles.signinLink, { color: colors.primary }]}>
+                Sign in
+              </Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -176,7 +198,7 @@ export default function RegistrationScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   scroll: {
     flexGrow: 1,
     paddingHorizontal: 24,
@@ -187,12 +209,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontFamily: "GoogleSansFlex-Bold",
-    color: "#5DCCFC",
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 14,
-    color: "#625D5D",
     lineHeight: 22,
     marginBottom: 24,
     fontFamily: "GoogleSansFlex-Regular",
@@ -200,16 +220,13 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontFamily: "GoogleSansFlex-Bold",
-    color: "#625D5D",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#625D5D",
     paddingHorizontal: 16,
     paddingVertical: 17,
     fontSize: 12,
-    color: "#1F2937",
     marginBottom: 20,
     fontFamily: "GoogleSansFlex-Regular",
   },
@@ -217,7 +234,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#625D5D",
     paddingHorizontal: 16,
     marginBottom: 20,
   },
@@ -225,7 +241,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 17,
     fontSize: 12,
-    color: "#1F2937",
     fontFamily: "GoogleSansFlex-Regular",
   },
   eyeButton: {
@@ -240,14 +255,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 10,
-    color: "#625D5D",
     fontFamily: "GoogleSansFlex-Regular",
   },
   checkbox: {
     borderRadius: 0,
   },
   registerButton: {
-    backgroundColor: "#5DCCFC",
     paddingVertical: 18,
     alignItems: "center",
     marginTop: 45,
@@ -261,13 +274,11 @@ const styles = StyleSheet.create({
   },
   signinWrapper: { alignItems: "center" },
   signinText: {
-    color: "#625D5D",
     fontSize: 13,
     fontFamily: "GoogleSansFlex-Regular",
     textDecorationLine: "underline",
   },
   signinLink: {
-    color: "#5DCCFC",
     fontFamily: "GoogleSansFlex-Bold",
     textDecorationLine: "underline",
   },

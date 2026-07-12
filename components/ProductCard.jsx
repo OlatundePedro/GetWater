@@ -1,9 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useFavourites } from "../context/FavouritesContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function ProductCard({ product, onPress }) {
-  const [favorited, setFavorited] = useState(false);
+  const { toggleFavourite, isFavorited } = useFavourites();
+  const { colors } = useTheme();
+  const favorited = isFavorited(product.id);
 
   return (
     <TouchableOpacity
@@ -12,20 +15,26 @@ export default function ProductCard({ product, onPress }) {
       activeOpacity={0.85}
     >
       <View style={styles.imageWrapper}>
-        <Image source={product.image} style={styles.image} resizeMode="cover" />
+        <Image
+          source={{ uri: product.image_url }}
+          style={styles.image}
+          resizeMode="cover"
+        />
         <TouchableOpacity
           style={styles.heartButton}
-          onPress={() => setFavorited(!favorited)}
+          onPress={() => toggleFavourite(product)}
         >
           <Ionicons
             name={favorited ? "heart" : "heart-outline"}
             size={18}
-            color="#FFFFFF"
+            color={favorited ? colors.danger : "#FFFFFF"}
           />
         </TouchableOpacity>
       </View>
-      <Text style={styles.name}>{product.name}</Text>
-      <Text style={styles.price}>₦{product.price}</Text>
+      <Text style={[styles.name, { color: colors.text }]}>{product.name}</Text>
+      <Text style={[styles.price, { color: colors.textMuted }]}>
+        ₦{product.price}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -50,20 +59,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
-    backgroundColor:
-      "linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2))",
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
     borderRadius: 8,
     padding: 6,
   },
   name: {
     fontSize: 14,
     fontFamily: "GoogleSansFlex-Bold",
-    color: "#1F2937",
   },
   price: {
     fontSize: 11,
     fontFamily: "GoogleSansFlex-Regular",
-    color: "#6B7280",
     marginTop: 2,
   },
 });
