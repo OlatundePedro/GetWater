@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   payButton: {
-    backgroundColor: "#3FBDF1",
+    backgroundColor: "#12a5e4",
     paddingVertical: 18,
     alignItems: "center",
     justifyContent: "center",

@@ -1,15 +1,11 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function CategoryFilter({ types, selected, onSelect }) {
   const { colors } = useTheme();
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-    >
+    <View style={styles.container}>
       {types.map((type) => {
         const isActive = type === selected;
         return (
@@ -28,26 +24,28 @@ export default function CategoryFilter({ types, selected, onSelect }) {
                 styles.chipText,
                 { color: isActive ? "#FFFFFF" : colors.textMuted },
               ]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
             >
               {type}
             </Text>
           </TouchableOpacity>
         );
       })}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingRight: 20,
+    flexDirection: "row",
     gap: 10,
   },
   chip: {
+    flex: 1, // ← evenly divides available width
     paddingVertical: 10,
-    paddingHorizontal: 28,
     borderRadius: 6,
-    marginRight: 0,
+    alignItems: "center", // center the text since padding is no longer manual
   },
   chipText: {
     fontFamily: "GoogleSansFlex-Regular",

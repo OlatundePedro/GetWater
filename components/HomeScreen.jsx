@@ -39,6 +39,7 @@ export default function HomeScreen({
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView
         style={[styles.header, { backgroundColor: colors.primary }]}
+        edges={["top"]}
       >
         <View style={styles.headerTop}>
           {user ? (
@@ -101,27 +102,28 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: {
     paddingHorizontal: 20,
-    paddingBottom: 40,
-    height: 215,
+    paddingTop: 16,
+    paddingBottom: 24,
+    // height removed — SafeAreaView + padding size this naturally now
   },
   headerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 25,
+    marginBottom: 20,
   },
   welcomeTitle: {
     fontSize: 22,
     color: "#FFFFFF",
-    marginTop: 75,
     fontFamily: "GoogleSansFlex-Bold",
     marginBottom: 10,
+    // marginTop removed
   },
   welcomeBackLabel: {
     fontSize: 12,
     color: "#FFFFFF",
-    marginTop: 60,
     fontFamily: "GoogleSansFlex-Medium",
+    // marginTop removed
   },
   welcomeBackName: {
     fontSize: 20,

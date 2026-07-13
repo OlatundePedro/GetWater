@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 160,
+    aspectRatio: 1, // or 4/3, 3/2 — whatever ratio matches your product photos best
     backgroundColor: "#F3F4F6",
   },
   heartButton: {

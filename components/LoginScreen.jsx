@@ -205,7 +205,6 @@ const styles = StyleSheet.create({
   signupText: {
     fontSize: 13,
     textDecorationLine: "underline",
-    marginBottom: 160,
     fontFamily: "GoogleSansFlex-Regular",
   },
   signupLink: {
