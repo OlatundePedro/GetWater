@@ -25,7 +25,7 @@ export default function CheckoutScreen({
   onBack,
   onChangeAddress,
   onAddCard,
-  onPlaceOrder,
+  renderFooterButton, // NEW — replaces onPlaceOrder
 }) {
   const { colors } = useTheme();
   const [address, setAddress] = useState(initialAddress);
@@ -47,16 +47,6 @@ export default function CheckoutScreen({
   });
 
   const total = subtotal + deliveryFee;
-
-  const handlePlaceOrder = () => {
-    onPlaceOrder({
-      deliveryType,
-      date: deliveryType === "scheduled" ? selectedDate : null,
-      time: deliveryType === "scheduled" ? selectedTime : null,
-      cardId: selectedCardId,
-      total,
-    });
-  };
 
   const openAddressModal = () => {
     setAddressDraft(address);
@@ -246,12 +236,13 @@ export default function CheckoutScreen({
           </View>
         </View>
 
-        <TouchableOpacity
-          style={[styles.placeOrderButton, { backgroundColor: colors.primary }]}
-          onPress={handlePlaceOrder}
-        >
-          <Text style={styles.placeOrderText}>Place Order</Text>
-        </TouchableOpacity>
+        {renderFooterButton?.({
+          deliveryType,
+          date: deliveryType === "scheduled" ? selectedDate : null,
+          time: deliveryType === "scheduled" ? selectedTime : null,
+          cardId: selectedCardId,
+          total,
+        })}
       </ScrollView>
 
       <Modal
@@ -527,16 +518,6 @@ const styles = StyleSheet.create({
   summaryValueBold: {
     fontSize: 17,
     fontFamily: "GoogleSansFlex-Bold",
-  },
-  placeOrderButton: {
-    paddingVertical: 18,
-    alignItems: "center",
-    marginTop: 18,
-  },
-  placeOrderText: {
-    color: "#FFFFFF",
-    fontFamily: "GoogleSansFlex-Medium",
-    fontSize: 16,
   },
   modalOverlay: {
     flex: 1,
