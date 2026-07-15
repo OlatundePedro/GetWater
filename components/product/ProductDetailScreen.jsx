@@ -146,7 +146,12 @@ export default function ProductDetailScreen({
           </View>
 
           <View style={styles.optionColumn}>
-            <Text style={[styles.optionLabel, { color: colors.text }]}>
+            <Text
+              style={[
+                styles.optionLabel,
+                { color: colors.text, textAlign: "right" },
+              ]}
+            >
               Quantity
             </Text>
             <View style={styles.quantityRow}>
@@ -351,7 +356,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 16,
-    marginLeft: 70,
+    alignSelf: "flex-end",
   },
   quantityButton: {
     width: 40,
@@ -363,6 +368,8 @@ const styles = StyleSheet.create({
   quantitySign: {
     fontSize: 18,
     fontFamily: "GoogleSansFlex-Medium",
+    width: 24,
+    textAlign: "center",
   },
   quantityValue: {
     fontSize: 18,
