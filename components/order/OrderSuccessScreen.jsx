@@ -56,12 +56,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingHorizontal: 28,
-    paddingTop: 10,
+    justifyContent: "center",
   },
   orderIdText: {
     fontSize: 22,
-    marginBottom: 40,
-    marginTop: 90,
+    marginBottom: 24,
   },
   boxImage: {
     width: 260,

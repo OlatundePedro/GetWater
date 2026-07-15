@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +21,12 @@ export default function OnboardingScreen({
   onBack,
   buttonLabel = "NEXT",
 }) {
+  const { width, height } = useWindowDimensions();
+
+  // Cap the illustration so it never crowds out the text below it —
+  // whichever is smaller: 65% of screen width, or 32% of screen height
+  const illustrationSize = Math.min(width * 0.65, height * 0.32, 310);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -33,7 +40,10 @@ export default function OnboardingScreen({
       <View style={styles.content}>
         <Image
           source={image}
-          style={styles.illustration}
+          style={[
+            styles.illustration,
+            { width: illustrationSize, height: illustrationSize },
+          ]}
           resizeMode="contain"
         />
 
@@ -58,9 +68,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: "absolute",
-    top: 16,
-    right: 38,
-    marginTop: 45,
+    top: 45,
+    right: 20,
+    zIndex: 1,
   },
   content: {
     flex: 1,
@@ -69,8 +79,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
   },
   illustration: {
-    width: 310,
-    height: 310,
     marginBottom: 32,
   },
   title: {
@@ -82,7 +90,7 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "GoogleSansFlex-regular",
     color: "#625D5D",
     textAlign: "center",

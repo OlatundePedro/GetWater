@@ -57,7 +57,7 @@ export default function AvatarPicker({ avatarUrl, onUploaded }) {
     if (!permission.granted) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.7,
@@ -210,7 +210,7 @@ export default function AvatarPicker({ avatarUrl, onUploaded }) {
 const styles = StyleSheet.create({
   avatarWrapper: {
     alignSelf: "center",
-    marginBottom: 13,
+    marginBottom: 16,
   },
   avatar: {
     width: 100,
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   avatarPlaceholder: {
     width: 100,
     height: 100,
-    borderRadius: 20,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
   },

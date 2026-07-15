@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +22,8 @@ export default function ProductDetailScreen({
   onCart,
   onBuy,
 }) {
+  const { height: windowHeight } = useWindowDimensions();
+
   const { toggleFavourite, isFavorited } = useFavourites();
   const { addToCart } = useCart();
   const { colors } = useTheme();
@@ -46,7 +49,7 @@ export default function ProductDetailScreen({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.imageWrapper}>
+      <View style={[styles.imageWrapper, { height: windowHeight * 0.42 }]}>
         {product.image_url ? (
           <Image
             source={{ uri: product.image_url }}
@@ -233,7 +236,6 @@ export default function ProductDetailScreen({
 const styles = StyleSheet.create({
   container: { flex: 1 },
   imageWrapper: {
-    height: 420,
     position: "relative",
   },
   image: {

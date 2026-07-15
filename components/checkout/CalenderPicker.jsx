@@ -149,13 +149,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   weekdayLabel: {
-    width: 36,
+    flex: 1,
     textAlign: "center",
     fontSize: 13,
     fontFamily: "GoogleSansFlex-Regular",
   },
   dayCell: {
-    width: 36,
+    flex: 1,
     height: 36,
     justifyContent: "center",
     alignItems: "center",

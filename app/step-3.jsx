@@ -9,7 +9,7 @@ export default function OnboardingStep3() {
       image={require("../assets/images/Illustration - Delivery, Business, Media _ multimedia, truck, woman, social media, running, speed.png")}
       title={"Fast and responsibily \ndelivery"}
       subtitle={
-        "Experience crystal-clear purity in every \nrefreshing sip you take"
+        "Order in seconds, stay hydrated, and enjoy \nconvenience with every delivery."
       }
       currentStep={2}
       totalSteps={3}

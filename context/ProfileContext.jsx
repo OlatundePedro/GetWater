@@ -62,8 +62,6 @@ export function ProfileProvider({ children }) {
     setProfile(data);
     return data;
   };
-  const isStaff = profile?.role === "staff" || profile?.role === "admin";
-  const isAdmin = profile?.role === "admin";
 
   return (
     <ProfileContext.Provider

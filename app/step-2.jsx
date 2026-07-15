@@ -7,9 +7,9 @@ export default function OnboardingStep2() {
   return (
     <OnboardingScreen
       image={require("../assets/images/Illustration - Shopping, e-commerce _ purchase, shopping, shop, commerce, payment, store.png")}
-      title={"Schedule when you want \nyour water delivered"}
+      title={"Schedule when you want \nyourrr water delivered"}
       subtitle={
-        "Experience crystal-clear purity in every \nrefreshing sip you take"
+        "Fresh water, delivered right to your doorstep \nwhereever, whenever."
       }
       currentStep={1}
       totalSteps={3}

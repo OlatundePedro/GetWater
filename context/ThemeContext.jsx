@@ -9,18 +9,18 @@ export const lightTheme = {
   textMuted: "#6B7280",
   textFaint: "#9CA3AF",
   primary: "#12a5e4",
-  danger: "#8f0d0d",
+  danger: "#be3030",
 };
 
 export const darkTheme = {
-  background: "#191a1a",
+  background: "#0F172A",
   card: "#1E293B",
   border: "#334155",
   text: "#F1F5F9",
-  textMuted: "#687383",
+  textMuted: "#94A3B8",
   textFaint: "#64748B",
   primary: "#12a5e4",
-  danger: "#8f0d0d",
+  danger: "#be3030",
 };
 
 const ThemeContext = createContext(null);

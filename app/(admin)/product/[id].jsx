@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../config/supabase";
 import { useTheme } from "../../../context/ThemeContext";
 
-const WATER_TYPES = ["Sparkling", "Still", "Spring", "Mineral"]; // adjust to your real waterTypes
+const WATER_TYPES = ["Purified", "Distilled", "Spring", "Mineral"]; // adjust to your real waterTypes
 
 export default function ProductEditor() {
   const { colors } = useTheme();
@@ -73,34 +73,48 @@ export default function ProductEditor() {
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const pickAndUploadImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert(
-        "Permission needed",
-        "Please allow photo library access to upload an image.",
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (result.canceled) return;
-
-    const uri = result.assets[0].uri;
-    const fileExt = (uri.split(".").pop() || "jpg").toLowerCase();
-
-    if (!["jpg", "jpeg", "png"].includes(fileExt)) {
-      Alert.alert("Unsupported format", "Please choose a JPG or PNG image.");
-      return;
-    }
-
-    setUploadingImage(true);
+    // Everything below — permission request, picker launch, and upload —
+    // is now wrapped in one try/catch so any failure surfaces to the user
+    // instead of failing silently.
     try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(
+          "Permission needed",
+          "Please allow photo library access to upload an image.",
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        // MediaTypeOptions is the widely-compatible form across
+        // expo-image-picker versions. The newer string-array form
+        // (mediaTypes: ["images"]) only works on ~v16+ (SDK 52+).
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (result.canceled) return;
+
+      const asset = result.assets?.[0];
+      if (!asset?.uri) {
+        Alert.alert("Image error", "No image was returned by the picker.");
+        return;
+      }
+
+      const uri = asset.uri;
+      const fileExt = (uri.split(".").pop() || "jpg").toLowerCase();
+
+      if (!["jpg", "jpeg", "png"].includes(fileExt)) {
+        Alert.alert("Unsupported format", "Please choose a JPG or PNG image.");
+        return;
+      }
+
+      setUploadingImage(true);
+
       const response = await fetch(uri);
       const blob = await response.blob();
       const arrayBuffer = await new Response(blob).arrayBuffer();
@@ -117,7 +131,11 @@ export default function ProductEditor() {
       const { data } = supabase.storage.from("products").getPublicUrl(filePath);
       update("image_url", data.publicUrl);
     } catch (err) {
-      Alert.alert("Image upload failed", err.message);
+      console.error("Image picker/upload error:", err);
+      Alert.alert(
+        "Image upload failed",
+        err?.message || "Something went wrong picking or uploading the image.",
+      );
     } finally {
       setUploadingImage(false);
     }
@@ -371,7 +389,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   imagePickerBox: {
-    height: 160,
+    width: "100%",
+    aspectRatio: 16 / 9,
     borderWidth: 1,
     borderRadius: 8,
     overflow: "hidden",

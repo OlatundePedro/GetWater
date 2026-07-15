@@ -74,7 +74,7 @@ export default function Checkout() {
               customizations: {
                 title: "GetWater",
                 description: "Payment for items in cart",
-                logo: "https://your-logo-url.com/logo.png",
+                logo: "https://doiiiebyybbmnxksgnkf.supabase.co/storage/v1/object/public/app-icon/icon.png",
               },
             }}
             customButton={(props) => (

@@ -2,6 +2,8 @@
   "expo": {
     "name": "GetWater",
     "slug": "get-water",
+    "scheme": "getwater",
+    "icon": "./assets/images/app-icon.png",
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -39,7 +41,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "c5ad6111-2a71-4a55-b4dd-5ccf34fd44a3"
+        "projectId": "b5861f5b-d4dc-42e1-b294-2c871ffef419"
       }
     }
   }
