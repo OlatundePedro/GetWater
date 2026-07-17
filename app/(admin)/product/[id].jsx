@@ -16,15 +16,17 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../../config/supabase";
+import { useProducts } from "../../../context/ProductContext";
 import { useTheme } from "../../../context/ThemeContext";
 
-const WATER_TYPES = ["Purified", "Distilled", "Spring", "Mineral"]; // adjust to your real waterTypes
+const WATER_TYPES = ["Purified", "Distilled", "Spring"]; // adjust to your real waterTypes
 
 export default function ProductEditor() {
   const { colors } = useTheme();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const isNew = id === "new";
+  const { refreshProducts } = useProducts();
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -73,9 +75,6 @@ export default function ProductEditor() {
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const pickAndUploadImage = async () => {
-    // Everything below — permission request, picker launch, and upload —
-    // is now wrapped in one try/catch so any failure surfaces to the user
-    // instead of failing silently.
     try {
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -88,13 +87,10 @@ export default function ProductEditor() {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        // MediaTypeOptions is the widely-compatible form across
-        // expo-image-picker versions. The newer string-array form
-        // (mediaTypes: ["images"]) only works on ~v16+ (SDK 52+).
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ["images"],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.8,
+        quality: 0.7,
       });
 
       if (result.canceled) return;
@@ -177,6 +173,8 @@ export default function ProductEditor() {
       Alert.alert("Save failed", error.message);
       return;
     }
+
+    await refreshProducts();
     router.back();
   };
 

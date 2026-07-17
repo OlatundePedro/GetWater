@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignSelf: "flex-end",
     height: 30,
-    width: 80,
+    width: 90,
   },
   buttonText: {
     fontWeight: "600",
     color: "#000000",
-    fontSize: 7,
+    fontSize: 9,
     fontFamily: "GoogleSansFlex-Regular",
   },
 });

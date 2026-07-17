@@ -12,11 +12,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../config/supabase";
+import { useProducts } from "../../context/ProductContext";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function AdminProductList() {
   const { colors } = useTheme();
   const router = useRouter();
+  const { refreshProducts } = useProducts();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,6 +61,7 @@ export default function AdminProductList() {
               Alert.alert("Delete failed", error.message);
             } else {
               setProducts((prev) => prev.filter((p) => p.id !== product.id));
+              await refreshProducts();
             }
           },
         },

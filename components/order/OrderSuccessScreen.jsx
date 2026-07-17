@@ -1,13 +1,22 @@
+import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function OrderSuccessScreen({
   orderId,
+  address, // e.g. "12 Allen Ave, Ikeja" - pass this in from checkout/order data
   onContinueShopping,
-  onTrackOrder,
 }) {
   const { colors } = useTheme();
+  const router = useRouter();
+
+  const handleTrackOrder = () => {
+    router.push({
+      pathname: "/track-order",
+      params: { address, orderId },
+    });
+  };
 
   return (
     <SafeAreaView
@@ -40,7 +49,7 @@ export default function OrderSuccessScreen({
           <Text style={styles.continueText}>Continue shopping</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onTrackOrder}>
+        <TouchableOpacity onPress={handleTrackOrder}>
           <Text style={[styles.trackText, { color: colors.text }]}>
             Track Order
           </Text>

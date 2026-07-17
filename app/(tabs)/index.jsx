@@ -10,7 +10,7 @@ export default function Home() {
     <HomeScreen
       user={user}
       onSignUp={() => router.push("/signup")}
-      onQuickShop={() => router.push("/(tabs)/shop")}
+      onQuickShop={() => router.push("/(tabs)/cart")}
       onProductPress={(product) => router.push(`/product/${product.id}`)}
     />
   );

@@ -8,7 +8,7 @@ export default function GuestHome() {
     <HomeScreen
       user={null}
       onSignUp={() => router.push("/signup")}
-      onQuickShop={() => router.push("/(guest/shop")}
+      onQuickShop={() => router.push("/(guest)/cart")}
       onProductPress={(product) => router.push(`/product/${product.id}`)}
     />
   );
