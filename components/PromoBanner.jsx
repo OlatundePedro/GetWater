@@ -66,5 +66,6 @@ const styles = StyleSheet.create({
     color: "#000000",
     fontSize: 9,
     fontFamily: "GoogleSansFlex-Regular",
+    alignSelf: "center",
   },
 });

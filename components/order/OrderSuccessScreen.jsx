@@ -2,19 +2,17 @@ import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../context/ThemeContext";
+import { useOrder } from "../../hooks/useOrder";
 
-export default function OrderSuccessScreen({
-  orderId,
-  address, // e.g. "12 Allen Ave, Ikeja" - pass this in from checkout/order data
-  onContinueShopping,
-}) {
+export default function OrderSuccessScreen({ orderId, onContinueShopping }) {
   const { colors } = useTheme();
   const router = useRouter();
+  const { order } = useOrder(orderId);
 
   const handleTrackOrder = () => {
     router.push({
       pathname: "/track-order",
-      params: { address, orderId },
+      params: { orderId },
     });
   };
 
@@ -24,7 +22,7 @@ export default function OrderSuccessScreen({
     >
       <View style={styles.content}>
         <Text style={[styles.orderIdText, { color: colors.textMuted }]}>
-          Order Id: {orderId}
+          Order Id: {order?.order_code || "..."}
         </Text>
 
         <Image

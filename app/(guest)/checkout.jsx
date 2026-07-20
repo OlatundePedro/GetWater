@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import CheckoutScreen from "../../components/checkout/CheckoutScreen";
+import { supabase } from "../../config/supabase"; // same client useOrder.js points to
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useProfile } from "../../context/ProfileContext";
 import { paymentMethods } from "../../data/paymentMethods";
-import { generateOrderId } from "../../utils/generateOrderId";
 
 const DELIVERY_FEE = 10;
 
@@ -32,15 +32,45 @@ export default function Checkout() {
     phone: profile?.phone || "Add a phone number in Profile",
   };
 
-  const handleRedirect = (data) => {
-    if (data.status === "successful" || data.status === "completed") {
-      console.log("Payment successful:", data, orderDetailsRef.current);
-
-      const orderId = generateOrderId();
-      clearCart();
-      router.replace(`/order-success?orderId=${orderId}`);
-    } else {
+  const handleRedirect = async (data) => {
+    if (data.status !== "successful" && data.status !== "completed") {
       Alert.alert("Payment cancelled", "Your payment was not completed.");
+      return;
+    }
+
+    try {
+      const deliveryAddress = [address.line1, address.city]
+        .filter(Boolean)
+        .join(", ");
+
+      // this is the write that makes TrackOrderScreen work — it creates the
+      // row useOrder(orderId) fetches and subscribes to
+      const { data: order, error } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          delivery_address: deliveryAddress,
+          status: "order_made",
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.log(
+        "Payment successful, order created:",
+        order,
+        orderDetailsRef.current,
+      );
+
+      clearCart();
+      router.replace(`/order-success?orderId=${order.id}`);
+    } catch (err) {
+      console.error("Failed to create order after payment:", err);
+      Alert.alert(
+        "Payment received",
+        "Your payment went through, but we couldn't save your order. Please contact support with your payment reference.",
+      );
     }
   };
 

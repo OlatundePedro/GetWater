@@ -1,26 +1,30 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../context/ThemeContext";
+import { useOrder } from "../../hooks/useOrder";
 
 const STEPS = [
   {
     key: "order_made",
     icon: "lock-closed-outline",
-    title: "Order Successful",
+    title: "Order Made",
     subtitle: "Your order has been confirmed",
   },
   {
     key: "packaged",
     icon: "cube-outline",
-    title: "Packaged & Sent out",
-    subtitle: "Your goods have been packaged \nand sent to delivery",
+    title: "Packaged & Labelled",
+    subtitle: "Your goods have been packaged and sent to delivery",
   },
   {
     key: "in_transit",
@@ -36,14 +40,63 @@ const STEPS = [
   },
 ];
 
-export default function TrackOrderScreen({
-  fromLabel = "Get Water Warehouse",
-  toAddress,
-  etaLabel = "4 days",
-  currentStepIndex = 1, // 0-based index of the last completed step
-  onClose,
-}) {
+export default function TrackOrderScreen({ orderId, onClose }) {
   const { colors } = useTheme();
+  const { order, loading, error, saving, currentStepIndex, updateAddress } =
+    useOrder(orderId);
+
+  const [editing, setEditing] = useState(false);
+  const [draftAddress, setDraftAddress] = useState("");
+
+  const startEditing = () => {
+    setDraftAddress(order?.delivery_address || "");
+    setEditing(true);
+  };
+
+  const cancelEditing = () => setEditing(false);
+
+  const saveAddress = async () => {
+    const trimmed = draftAddress.trim();
+    if (!trimmed) return;
+    try {
+      await updateAddress(trimmed);
+      setEditing(false);
+    } catch (e) {
+      // swap for your toast/alert pattern
+      console.warn("Failed to update delivery address:", e.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          styles.centered,
+          { backgroundColor: colors.background },
+        ]}
+      >
+        <ActivityIndicator color={colors.primary} size="large" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          styles.centered,
+          { backgroundColor: colors.background },
+        ]}
+      >
+        <Text style={{ color: colors.text }}>Couldn't load this order.</Text>
+        <TouchableOpacity onPress={onClose} style={{ marginTop: 12 }}>
+          <Text style={{ color: colors.primary }}>Go back</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -64,6 +117,7 @@ export default function TrackOrderScreen({
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={[styles.routeCard, { backgroundColor: colors.card }]}>
           <View style={styles.routeRow}>
@@ -80,7 +134,7 @@ export default function TrackOrderScreen({
                 From
               </Text>
               <Text style={[styles.routeValue, { color: colors.text }]}>
-                {fromLabel}
+                {order.from_label || "Get Water"}
               </Text>
             </View>
           </View>
@@ -96,22 +150,76 @@ export default function TrackOrderScreen({
               />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.routeLabel, { color: colors.textFaint }]}>
-                To
-              </Text>
-              <Text style={[styles.routeValue, { color: colors.text }]}>
-                {toAddress || "Delivery address"}
-              </Text>
+              <View style={styles.toHeaderRow}>
+                <Text style={[styles.routeLabel, { color: colors.textFaint }]}>
+                  To
+                </Text>
+                {!editing && (
+                  <TouchableOpacity onPress={startEditing} hitSlop={8}>
+                    <Text style={[styles.editLink, { color: colors.primary }]}>
+                      Edit
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              {editing ? (
+                <View>
+                  <TextInput
+                    value={draftAddress}
+                    onChangeText={setDraftAddress}
+                    placeholder="Enter delivery address"
+                    placeholderTextColor={colors.textFaint}
+                    style={[
+                      styles.addressInput,
+                      {
+                        color: colors.text,
+                        borderColor: colors.border,
+                        backgroundColor: colors.background,
+                      },
+                    ]}
+                    multiline
+                    autoFocus
+                  />
+                  <View style={styles.editActions}>
+                    <TouchableOpacity
+                      onPress={cancelEditing}
+                      style={styles.editActionBtn}
+                    >
+                      <Text style={{ color: colors.textMuted }}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={saveAddress}
+                      disabled={saving}
+                      style={styles.editActionBtn}
+                    >
+                      {saving ? (
+                        <ActivityIndicator
+                          color={colors.primary}
+                          size="small"
+                        />
+                      ) : (
+                        <Text
+                          style={{ color: colors.primary, fontWeight: "700" }}
+                        >
+                          Save
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <Text style={[styles.routeValue, { color: colors.text }]}>
+                  {order.delivery_address || "Add a delivery address"}
+                </Text>
+              )}
             </View>
           </View>
         </View>
 
-        {/* Uses colors.primary (same brand blue in both themes) instead of
-            colors.text as background, so the white label/value never goes
-            invisible in dark mode. */}
         <View style={[styles.etaCard, { backgroundColor: colors.primary }]}>
           <Text style={styles.etaLabel}>Estimated Time of Delivery</Text>
-          <Text style={styles.etaValue}>{etaLabel}</Text>
+          <Text style={styles.etaValue}>{order.eta_label || "4 days"}</Text>
         </View>
 
         <View style={styles.timeline}>
@@ -184,12 +292,13 @@ export default function TrackOrderScreen({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  centered: { justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 15,
+    paddingTop: 20,
     paddingBottom: 20,
   },
   headerTitle: {
@@ -201,7 +310,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   routeCard: {
-    borderRadius: 14,
+    borderRadius: 8,
     padding: 20,
   },
   routeRow: {
@@ -224,34 +333,62 @@ const styles = StyleSheet.create({
   },
   routeLabel: {
     fontSize: 12,
-    fontFamily: "GoogleSansFlex-Semi-Bold",
+    fontFamily: "GoogleSansFlex-Regular",
     marginBottom: 4,
   },
   routeValue: {
-    fontSize: 14,
-    fontFamily: "GoogleSansFlex-Regular",
+    fontSize: 17,
+    fontFamily: "GoogleSansFlex-Bold",
   },
   routeDivider: {
     height: 1,
     marginVertical: 14,
   },
+  toHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  editLink: {
+    fontSize: 13,
+    fontFamily: "GoogleSansFlex-SemiBold",
+  },
+  addressInput: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 15,
+    fontFamily: "GoogleSansFlex-Regular",
+    minHeight: 44,
+    marginTop: 4,
+  },
+  editActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 18,
+    marginTop: 8,
+  },
+  editActionBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+  },
   etaCard: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderRadius: 14,
+    borderRadius: 8,
     paddingVertical: 20,
     paddingHorizontal: 22,
     marginTop: 20,
   },
   etaLabel: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: "GoogleSansFlex-Bold",
   },
   etaValue: {
     color: "#FFFFFF",
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "GoogleSansFlex-Bold",
   },
   timeline: {
@@ -288,7 +425,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   timelineTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontFamily: "GoogleSansFlex-SemiBold",
     marginBottom: 4,
   },

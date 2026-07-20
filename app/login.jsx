@@ -26,7 +26,7 @@ export default function Login() {
       loading={loading}
       onBack={() => router.back()}
       onLogin={handleLogin}
-      onForgotPassword={() => router.push("/forgot-password")}
+      onForgotPassword={() => router.push("/forget-password")}
       onSignUp={() => router.push("/signup")}
     />
   );

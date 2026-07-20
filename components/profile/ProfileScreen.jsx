@@ -75,6 +75,16 @@ export default function ProfileScreen({
             Settings
           </Text>
 
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push("/my-orders")}
+          >
+            <Ionicons name="bag-check-outline" size={20} color={colors.text} />
+            <Text style={[styles.menuItemText, { color: colors.text }]}>
+              My Orders
+            </Text>
+          </TouchableOpacity>
+
           {/* Admin Section */}
           {isStaff && (
             <>
@@ -90,6 +100,20 @@ export default function ProfileScreen({
               >
                 Admin
               </Text>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => router.push("/orders")}
+              >
+                <Ionicons
+                  name="receipt-outline"
+                  size={20}
+                  color={colors.primary}
+                />
+                <Text style={[styles.menuItemText, { color: colors.primary }]}>
+                  Manage Orders
+                </Text>
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.menuItem}

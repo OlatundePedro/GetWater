@@ -23,8 +23,12 @@ export function useOrder(orderId) {
       .eq("id", orderId)
       .single();
 
-    if (error) setError(error);
-    else setOrder(data);
+    if (error) {
+      console.log("useOrder fetch error:", JSON.stringify(error, null, 2));
+      setError(error);
+    } else {
+      setOrder(data);
+    }
     setLoading(false);
   }, [orderId]);
 

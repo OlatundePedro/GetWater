@@ -3,7 +3,7 @@ import TrackOrderScreen from "../components/order/TrackOrderScreen";
 
 export default function TrackOrder() {
   const router = useRouter();
-  const { address, orderId } = useLocalSearchParams();
+  const { orderId } = useLocalSearchParams();
 
-  return <TrackOrderScreen toAddress={address} onClose={() => router.back()} />;
+  return <TrackOrderScreen orderId={orderId} onClose={() => router.back()} />;
 }
